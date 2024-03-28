@@ -1,0 +1,52 @@
+lines = read_file("input/2").lines();
+
+two := three := 0;
+
+for line in lines {
+  has_two := has_three := false;
+
+  for c in "abcdefghijklmnopqrstuvwxyz" {
+    count := 0;
+    for cc in line {
+      if cc == c {
+        count = count + 1;
+      }
+    }
+
+    if count == 2 { 
+      has_two = true;
+    }
+    if count == 3{
+      has_three = true;
+    }
+  }
+
+  if has_two { 
+    two = two + 1;
+  }
+  if has_three {
+    three = three + 1;
+  }
+}
+
+print("Part one", two, three, two * three);
+
+for a in lines {
+  for b in lines {
+    if a != b {
+      miss := idx := 0;
+      len := a.len();
+      while idx < len {
+        if a[idx] != b[idx] {
+          miss = miss + 1;
+        }
+        idx = idx + 1;
+      }
+
+      // TODO: actually generate the correct answer :HAHA:
+      if miss == 1 { print(a, b, miss); }
+    }
+  }
+}
+
+
