@@ -7,21 +7,14 @@ idx := 0;
 sum := 0;
 
 while idx < len {
-  c := lines[idx];
-
-  if lines[idx][0] == "-" {
-    c[0] = "0";
-    lines[idx] =  -int(c);
-  } else {
-    c[0] = "0";
-    lines[idx] = int(c);
-  }
+  // The `int` function accepts a '+' sign as part of the input string
+  lines[idx] = int(lines[idx]);
   sum = sum + lines[idx];
   nums[idx] = sum;
   idx = idx + 1;
 }
 
-print("Part 1: ", sum );
+print("Part 1: ", sum);
 
 fn loop() {
   while true {
