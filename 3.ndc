@@ -1,0 +1,25 @@
+lines := read_file("input/3").lines();
+
+map := %{:0};
+
+for line in lines {
+  nums := line.nums();
+  x := nums[1];
+  y := nums[2];
+  w := nums[3];
+  h := nums[4];
+  
+  for dx in 0..w {
+    for dy in 0..h {
+      map[(x + dx) * 100000 + (y + dy)] += 1;
+    }
+  }
+}
+
+ans := 0;
+for tup in map {
+  if tup[1] >= 2 {
+    ans += 1;
+  }
+}
+print(ans);
