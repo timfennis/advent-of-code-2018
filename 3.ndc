@@ -11,7 +11,7 @@ for line in lines {
   
   for dx in 0..w {
     for dy in 0..h {
-      map[(x + dx) * 100000 + (y + dy)] += 1;
+      map[(x + dx, y + dy)] += 1;
     }
   }
 }
@@ -22,4 +22,25 @@ for tup in map {
     ans += 1;
   }
 }
-print(ans);
+print("Part 1:", ans);
+
+for line in lines {
+  nums := line.nums();
+  x := nums[1];
+  y := nums[2];
+  w := nums[3];
+  h := nums[4];
+
+  fn is_ok() {
+    for dx in 0..w {
+      for dy in 0..h {
+        if map[(x + dx, y + dy)] > 1 {
+          return false;
+        }
+      }
+    }
+    true
+  }
+
+  if is_ok() { print("Part 2:", nums[0]) }
+}

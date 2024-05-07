@@ -1,0 +1,63 @@
+lines := read_file("input/6").lines();
+
+points := %{};
+
+min_x := 100000;
+max_x := 0;
+min_y := 100000;
+max_y := 0;
+
+for line in lines {
+  foo := line.nums();
+  points.insert((foo[0], foo[1]));
+  min_x min= foo[0];
+  min_y min= foo[1];
+  max_x max= foo[0];
+  max_y max= foo[1];
+}
+
+sizes := %{:0};
+
+part_two := 0;
+
+for x in min_x..=max_x {
+  for y in min_y..=max_y {
+    dists := %{};
+    sum := 0;
+    for point in points.keys() {
+      dx := abs(point[0] - x);
+      dy := abs(point[1] - y);
+      dist := dx + dy;
+      sum += dist;
+      if dist in dists {
+        dists[dist].insert(point);
+      } else {
+        dists[dist] = %{point};
+      }
+
+    }
+
+    if sum < 10_000 {
+      part_two += 1;
+    }
+
+    m := dists.min()
+    if dists[m].len() == 1 {
+      for p in dists[m].keys() {
+        if x != min_x && x != max_x && y != min_y && y == max_y {
+          sizes[p] += 1;
+        }
+      }
+    }
+  }
+}
+
+best := 0;
+
+for size_mapping in sizes {
+  point := size_mapping[0];
+  size := size_mapping[1];
+  best max= size;
+}
+print("part 1", best);
+print("part 2", part_two);

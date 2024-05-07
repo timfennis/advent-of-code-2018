@@ -1,0 +1,35 @@
+fn retract(cur) {
+  len := cur.len();
+  i := 0;
+  while i < (len - 1) {
+    sub := ord(cur[i]) - ord(cur[i + 1]);
+    if sub == 32 || sub == -32 {
+      cur = cur.slice(0, i) ++ cur.slice(i + 2, len);
+      i -= 2;
+      i max= 0;
+      len = cur.len();
+    } else {
+      i += 1;
+    }
+  }
+  return cur;
+}
+
+line := read_file("input/5").trim();
+
+ans := line.retract().len();
+print("part 1:", ans);
+
+best := ans;
+for c in "abcdefghijklmnopqrstuvwxyz" {
+  l := "";
+  for cc in line {
+    if cc.to_lower() != c {
+      l.append(cc);
+    }
+  }
+  
+  best min= l.retract().len();
+}
+
+print("part 2:", best);

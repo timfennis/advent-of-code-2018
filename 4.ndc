@@ -1,0 +1,59 @@
+lines := read_file("input/4").lines().sorted();
+
+guards := %{};
+id := "";
+sleep := ();
+for line in lines {
+  matches := line.capture_once(r"^\[\d+-\d+-\d+ (\d+):(\d+)\] (.*)");
+  hour := int(matches[1]);
+  minute := int(matches[2]);
+  
+  start := matches[3].capture_once(r"Guard #(\d+) begins shift");
+  if start != [] {
+    id = int(start[1]);
+    if !(id in guards) {
+      guards[id] = %{:0};
+    }
+  }
+  if matches[3] == "falls asleep" {
+    sleep = minute;
+  }
+  if matches[3] == "wakes up" {
+    for min in sleep..minute {
+      guards[id][min] += 1;
+    }
+  }
+}
+
+p1 := (0, 0, 0);
+p2 := (0, 0, 0);
+maxg := 0;
+ans := ();
+for guard in guards {
+  guard_id := guard[0];
+  records := guard[1];
+  print(guard[1].sum());
+  sum := 0;
+  max := 0;
+  best_sleep := 0;
+  best_minute := 0;
+  for rec in records {
+    minute := rec[0];
+    times_asleep := rec[1];
+
+    sum += times_asleep;
+    if times_asleep > p2[0] {
+      p2 = (times_asleep, minute, guard_id);
+    }
+    if times_asleep > best_sleep {
+      best_sleep = times_asleep;
+      best_minute = minute;
+    }
+  }
+  if sum > p1[0] {
+    p1 = (sum, best_minute, guard_id)
+  }
+}
+
+print("Part 1", p1[1] * p1[2]);
+print("Part 2", p2[1] * p2[2]);
