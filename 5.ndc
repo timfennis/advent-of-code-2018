@@ -7,7 +7,7 @@ fn retract(cur) {
       cur = cur.slice(0, i) ++ cur.slice(i + 2, len);
       i -= 2;
       i max= 0;
-      len = cur.len();
+      len = cur.byte_len();
     } else {
       i += 1;
     }

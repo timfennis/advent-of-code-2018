@@ -2,18 +2,15 @@ lines := read_file("input/6").lines();
 
 points := %{};
 
-min_x := 100000;
-max_x := 0;
-min_y := 100000;
-max_y := 0;
+min_x, max_x, min_y, max_y := Inf, -Inf, Inf, -Inf;
 
 for line in lines {
-  foo := line.nums();
-  points.insert((foo[0], foo[1]));
-  min_x min= foo[0];
-  min_y min= foo[1];
-  max_x max= foo[0];
-  max_y max= foo[1];
+  x, y := line.nums();
+  points.insert((x, y));
+  min_x min= x;
+  min_y min= y;
+  max_x max= x;
+  max_y max= y;
 }
 
 sizes := %{:0};
@@ -24,15 +21,13 @@ for x in min_x..=max_x {
   for y in min_y..=max_y {
     dists := %{};
     sum := 0;
-    for point in points.keys() {
-      dx := abs(point[0] - x);
-      dy := abs(point[1] - y);
-      dist := dx + dy;
+    for px, py in points.keys() {
+      dist := abs(px - x) + abs(py - y);
       sum += dist;
       if dist in dists {
-        dists[dist].insert(point);
+        dists[dist].insert((px, py));
       } else {
-        dists[dist] = %{point};
+        dists[dist] = %{(px, py)};
       }
 
     }
@@ -43,10 +38,8 @@ for x in min_x..=max_x {
 
     m := dists.min()
     if dists[m].len() == 1 {
-      for p in dists[m].keys() {
-        if x != min_x && x != max_x && y != min_y && y == max_y {
-          sizes[p] += 1;
-        }
+      for p, _ in dists[m] {
+        sizes[p] += 1;
       }
     }
   }
@@ -54,10 +47,9 @@ for x in min_x..=max_x {
 
 best := 0;
 
-for size_mapping in sizes {
-  point := size_mapping[0];
-  size := size_mapping[1];
+for point, size in sizes {
   best max= size;
 }
+
 print("part 1", best);
 print("part 2", part_two);

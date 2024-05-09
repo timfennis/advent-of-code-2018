@@ -1,16 +1,14 @@
 lines := read_file("input/1").lines();
+
 nums := [];
-
 len := lines.len();
+idx, sum := 0, 0;
 
-idx := sum := 0;
-
-while idx < len {
+for idx in 0..len {
   // The `int` function accepts a '+' sign as part of the input string
   lines[idx] = int(lines[idx]);
   sum += lines[idx];
   nums.push(sum);
-  idx += 1;
 }
 
 print("Part 1: ", sum);

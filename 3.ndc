@@ -3,11 +3,7 @@ lines := read_file("input/3").lines();
 map := %{:0};
 
 for line in lines {
-  nums := line.nums();
-  x := nums[1];
-  y := nums[2];
-  w := nums[3];
-  h := nums[4];
+  _, x, y, w, h := line.nums();
   
   for dx in 0..w {
     for dy in 0..h {
@@ -17,19 +13,16 @@ for line in lines {
 }
 
 ans := 0;
-for tup in map {
-  if tup[1] >= 2 {
+for _key, value in map {
+  if value >= 2 {
     ans += 1;
   }
 }
+
 print("Part 1:", ans);
 
 for line in lines {
-  nums := line.nums();
-  x := nums[1];
-  y := nums[2];
-  w := nums[3];
-  h := nums[4];
+  id, x, y, w, h := line.nums();
 
   fn is_ok() {
     for dx in 0..w {
@@ -42,5 +35,5 @@ for line in lines {
     true
   }
 
-  if is_ok() { print("Part 2:", nums[0]) }
+  if is_ok() { print("Part 2:", id) }
 }

@@ -1,9 +1,9 @@
 lines = read_file("input/2").lines();
 
-two := three := 0;
+two, three := 0, 0;
 
 for line in lines {
-  has_two := has_three := false;
+  has_two, has_three := false, false;
 
   for c in "abcdefghijklmnopqrstuvwxyz" {
     count := 0;
@@ -32,12 +32,12 @@ print("Part 1:", two * three);
 
 
 fn part2() {
-  for v in lines.cartesian_product(lines) {
+  for v, vv in lines.cartesian_product(lines) {
     idx := 0;
-    len := v[0].len();
+    len := v.len();
     diff := 0;
     while idx < len && diff <= 1 {
-      if v[0][idx] != v[1][idx] {
+      if v[idx] != vv[idx] {
         diff += 1;
       }
       idx += 1;
@@ -48,8 +48,8 @@ fn part2() {
       idx = 0;
       ans := "";
       while idx < len {
-        if v[0][idx] == v[1][idx] {
-          ans.append(v[1][idx]);
+        if v[idx] == vv[idx] {
+          ans.append(vv[idx]);
         }
         idx += 1;
       }
