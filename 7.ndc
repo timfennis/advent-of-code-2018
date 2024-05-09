@@ -1,0 +1,103 @@
+lines := read_file("input/7").trim().lines();
+// lines := read_file("input/7.ex").trim().lines();
+
+graph := %{};
+rev_graph := %{};
+
+fn score(n) { ord(n) - ord("A") + 61 }
+
+for line in lines {
+  _, from, to := line.capture_once(r"Step ([A-Z]) must be finished before step ([A-Z]) can begin.");
+
+  if !(from in graph) {
+    graph[from] = %{};
+  }
+
+  if !(to in rev_graph) {
+    rev_graph[to] = %{};
+  }
+
+  graph[from].insert(to);
+  rev_graph[to].insert(from);
+}
+
+queue := [];
+queue2 := %{};
+for key, _ in graph {
+  if !(key in rev_graph) {
+    queue.push(key);
+    queue2[key] = score(key);
+  }
+}
+
+path := "";
+while (cur := queue.pop()) != () {
+  path.append(cur);
+  
+
+  if cur in graph {
+    for dest, _ in graph[cur] {
+      if !(dest in path) && !(dest in queue) {
+        ok := true
+        if dest in rev_graph {
+          for check, _ in rev_graph[dest] {
+            if !(check in path) {
+              ok = false
+            }
+          }
+        }
+
+        if ok {
+          queue.push(dest);
+        }
+      }
+    }
+  }
+
+  queue = queue.sorted().reversed();
+}
+print("Part 1", path);
+
+path := "";
+
+seconds := 0;
+while queue2.len() > 0 {
+  seconds += 1;
+
+  work := queue2.keys().sorted();
+  lim := 0;
+  for step in work {
+    lim += 1;
+    if lim <= 5 {
+
+      queue2[step] -= 1;
+
+      if queue2[step] == 0 {
+        queue2.remove(step);
+        path.append(step);
+
+
+        if step in graph {
+          for dest, _ in graph[step] {
+            if !(dest in path) && !(dest in queue2) {
+              ok := true
+              if dest in rev_graph {
+                for check, _ in rev_graph[dest] {
+                  if !(check in path) {
+                    ok = false
+                  }
+                }
+              }
+
+              if ok {
+                queue2[dest] = score(dest);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+print("Part 2", path, seconds);
