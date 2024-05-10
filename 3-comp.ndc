@@ -1,0 +1,6 @@
+map := %{:0};
+for x, y in [x + dx, y + dy for _, x, y, w, h in [line.nums() for line in read_file("input/3").lines()], dx in 0..w, dy in 0..h] { 
+  map[x, y] += 1 
+}
+
+print("Part 1", [1 for _, value in map, if value >= 2 ].len());

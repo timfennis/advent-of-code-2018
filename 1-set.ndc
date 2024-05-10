@@ -1,0 +1,25 @@
+nums := read_file("input/1").signed_nums();
+sum := 0;
+set := %{};
+for num in nums {
+  sum += num;
+  set.insert(sum);
+}
+
+print("Part 1", sum);
+
+idx := 0;
+len := nums.len();
+go := true; // poor man break
+while go {
+  sum += nums[idx % len];
+
+  if sum in set {
+    go = false
+  } else {
+    set.insert(sum);
+  }
+  idx += 1;
+}
+
+print("Part 2", sum);

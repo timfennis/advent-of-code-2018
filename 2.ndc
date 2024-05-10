@@ -4,14 +4,9 @@ two, three := 0, 0;
 
 for line in lines {
   has_two, has_three := false, false;
-
+  
   for c in "abcdefghijklmnopqrstuvwxyz" {
-    count := 0;
-    for cc in line {
-      if cc == c {
-        count = count + 1;
-      }
-    }
+    count := [ 1 for cc in line, if cc == c ].sum();
 
     if count == 2 { 
       has_two = true;
@@ -32,7 +27,8 @@ print("Part 1:", two * three);
 
 
 fn part2() {
-  for v, vv in lines.cartesian_product(lines) {
+
+  for v in lines, vv in lines {
     idx := 0;
     len := v.len();
     diff := 0;
