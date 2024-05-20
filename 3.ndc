@@ -2,7 +2,6 @@ lines := read_file("input/3").lines();
 
 map := %{:0};
 
-[ _, x, y, w, h for line in lines, _, x, y, w, h in line.nums()]
 for line in lines {
   _, x, y, w, h := line.nums();
   

@@ -1,8 +1,8 @@
 lines := read_file("input/7").trim().lines();
-// lines := read_file("input/7.ex").trim().lines();
 
 graph := %{};
 rev_graph := %{};
+
 
 fn score(n) { ord(n) - ord("A") + 61 }
 
@@ -21,14 +21,8 @@ for line in lines {
   rev_graph[to].insert(from);
 }
 
-queue := [];
-queue2 := %{};
-for key, _ in graph {
-  if !(key in rev_graph) {
-    queue.push(key);
-    queue2[key] = score(key);
-  }
-}
+queue := [key for key, _ in graph, if key not in rev_graph];
+queue2 := %{key: score(key) for key in queue};
 
 path := "";
 while (cur := queue.pop()) != () {
@@ -36,20 +30,16 @@ while (cur := queue.pop()) != () {
   
 
   if cur in graph {
-    for dest, _ in graph[cur] {
-      if !(dest in path) && !(dest in queue) {
-        ok := true
-        if dest in rev_graph {
-          for check, _ in rev_graph[dest] {
-            if !(check in path) {
-              ok = false
-            }
-          }
+    for dest, _ in graph[cur], if dest not in path and dest not in queue {
+      ok := true
+      if dest in rev_graph {
+        for check, _ in rev_graph[dest], if check not in path {
+          ok = false
         }
+      }
 
-        if ok {
-          queue.push(dest);
-        }
+      if ok {
+        queue.push(dest);
       }
     }
   }
@@ -78,20 +68,16 @@ while queue2.len() > 0 {
 
 
         if step in graph {
-          for dest, _ in graph[step] {
-            if !(dest in path) && !(dest in queue2) {
-              ok := true
-              if dest in rev_graph {
-                for check, _ in rev_graph[dest] {
-                  if !(check in path) {
-                    ok = false
-                  }
-                }
+          for dest, _ in graph[step], if dest not in path and dest not in queue2 {
+            ok := true
+            if dest in rev_graph {
+              for check, _ in rev_graph[dest], if check not in path {
+                ok = false
               }
+            }
 
-              if ok {
-                queue2[dest] = score(dest);
-              }
+            if ok {
+              queue2[dest] = score(dest);
             }
           }
         }

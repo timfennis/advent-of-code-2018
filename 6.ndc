@@ -4,8 +4,7 @@ points := %{};
 
 min_x, max_x, min_y, max_y := Inf, -Inf, Inf, -Inf;
 
-for line in lines {
-  x, y := line.nums();
+for x, y in [line.nums() for line in lines] {
   points.insert((x, y));
   min_x min= x;
   min_y min= y;
@@ -17,30 +16,28 @@ sizes := %{:0};
 
 part_two := 0;
 
-for x in min_x..=max_x {
-  for y in min_y..=max_y {
-    dists := %{};
-    sum := 0;
-    for px, py in points.keys() {
-      dist := abs(px - x) + abs(py - y);
-      sum += dist;
-      if dist in dists {
-        dists[dist].insert((px, py));
-      } else {
-        dists[dist] = %{(px, py)};
-      }
-
+for x in min_x..=max_x, y in min_y..=max_y {
+  dists := %{};
+  sum := 0;
+  for px, py in points.keys() {
+    dist := abs(px - x) + abs(py - y);
+    sum += dist;
+    if dist in dists {
+      dists[dist].insert((px, py));
+    } else {
+      dists[dist] = %{(px, py)};
     }
 
-    if sum < 10_000 {
-      part_two += 1;
-    }
+  }
 
-    m := dists.min()
-    if dists[m].len() == 1 {
-      for p, _ in dists[m] {
-        sizes[p] += 1;
-      }
+  if sum < 10_000 {
+    part_two += 1;
+  }
+
+  m := dists.min()
+  if dists[m].len() == 1 {
+    for p, _ in dists[m] {
+      sizes[p] += 1;
     }
   }
 }

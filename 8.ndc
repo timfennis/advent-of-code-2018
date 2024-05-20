@@ -1,0 +1,38 @@
+// data := "2 3 0 3 10 11 12 1 1 0 1 99 2 1 1 2".nums();
+data := read_file("input/8").trim().nums();
+
+map := %{};
+node := 0;
+idx := 0;
+
+fn process() {
+  cur_node := (node += 1);
+  children_count := data[idx];
+  idx += 1;
+  metadata_count := data[idx];
+  idx += 1;
+
+  sum := 0;
+  for n in 0..children_count {
+    sum += process();
+  }
+  
+  metadata := []
+  for n in 0..metadata_count {
+    metadata.push(data[idx]);
+    idx += 1;
+  }
+  
+  if children_count == 0 {
+    map[cur_node] = metadata.sum();
+    sum + metadata.sum()
+  } else {
+    sum + metadata.sum()
+  }
+}
+
+
+p1 := process();
+assert(p1 == 42768);
+print("Part 1", p1);
+

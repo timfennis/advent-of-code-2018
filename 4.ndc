@@ -11,7 +11,7 @@ for line in lines {
   start := txt.capture_once(r"Guard #(\d+) begins shift");
   if start != [] {
     id = int(start[1]);
-    if !(id in guards) {
+    if id not in guards {
       guards[id] = %{:0};
     }
   }
