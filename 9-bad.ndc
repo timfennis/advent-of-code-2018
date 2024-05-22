@@ -1,0 +1,40 @@
+
+fn marble_sim(players, limit) {
+  scores := [0 for _ in 0..players];
+  circle := [0];
+  cur_idx := 1;
+
+  for n in 1..=limit {
+    len := circle.len();
+    
+    if n % 23 == 0 {
+      player := (n-1) % players;
+      new_idx := (cur_idx - 7) %% len;
+      rem := circle.remove(new_idx);
+      // print(rem);
+      scores[player] += n + rem;
+      cur_idx = new_idx;
+    } else {
+      new_idx := (cur_idx + 2) % len;
+      if new_idx == 0 { new_idx = len }
+      circle.insert(new_idx, n);
+      cur_idx = new_idx;
+    }
+    if n % (limit / 100) == 0 { print(scores[22]) }
+  }
+
+  max(scores)
+};
+
+[assert(marble_sim(p, m) == a) for [p, m, a]  in [line.nums() for line in "10 players; last marble is worth 1618 points: high score is 8317
+13 players; last marble is worth 7999 points: high score is 146373
+17 players; last marble is worth 1104 points: high score is 2764
+21 players; last marble is worth 6111 points: high score is 54718
+30 players; last marble is worth 5807 points: high score is 37305".lines()]];
+
+p, m := read_file("input/9").trim().nums();
+
+// print("Part 1:", marble_sim(p, m));
+print("Part 1:", marble_sim(p, m * 100));
+for x in 1..=100 {
+}

@@ -1,0 +1,65 @@
+fn new(val) {
+  self := %{"n": (), "p": (), "v": val};
+  self["n"] = self;
+  self["p"] = self;
+  self
+};
+
+fn append(node, val) {
+  n := node.next();
+  new := %{"p": node, "n": n, "v": val};
+  n["p"] = new;
+  node["n"] = new;
+  new
+}
+
+fn remove(node) {
+  p := node.prev();
+  n := node.next();
+  p["n"] = n;
+  n["p"] = p;
+  n
+}
+
+fn next(node) { node["n"] }
+fn prev(node) { node["p"] }
+fn val(node) { node["v"] }
+
+fn print_ll(start) {
+  print("---------");
+  print(start.val());
+  cur := start.next();
+  while cur.val() != start.val() {
+    print(cur.val());
+    cur = cur.next();
+  }
+  print("---------");
+}
+
+fn solve(players, limit) {
+  scores := [0 for _ in 0..players];
+  circle := new(0);
+  
+  for n in 1..=limit {
+    if n % 23 == 0 { 
+      player := (n-1) % players;
+      // 7 back
+      circle = circle.prev().prev().prev().prev().prev().prev().prev();
+      rem := circle.val();
+      circle = circle.remove();
+      scores[player] += n + rem;
+    } else {
+      circle = circle.next();
+      circle = circle.append(n);
+    }
+  }
+
+  max(scores)
+}
+
+print(solve(10, 1618), 8317);
+
+p, m := read_file("input/9").trim().nums();
+
+print("Part 1", solve(p, m));
+print("Part 2", solve(p, m * 100));
