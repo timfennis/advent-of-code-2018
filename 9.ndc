@@ -25,17 +25,6 @@ fn next(node) { node["n"] }
 fn prev(node) { node["p"] }
 fn val(node) { node["v"] }
 
-fn print_ll(start) {
-  print("---------");
-  print(start.val());
-  cur := start.next();
-  while cur.val() != start.val() {
-    print(cur.val());
-    cur = cur.next();
-  }
-  print("---------");
-}
-
 fn solve(players, limit) {
   scores := [0 for _ in 0..players];
   circle := new(0);
