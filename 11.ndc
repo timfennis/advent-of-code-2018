@@ -1,0 +1,38 @@
+fn power(x, y, serial_number) {
+  (int(((x + 10) * y + serial_number) * (x + 10) / 100) % 10) - 5
+}
+
+fn grid(serial_number, w, h) {
+  coord := 0, 0;
+  best := -Inf;
+  for x in 1..(300-w), y in 1..(300-h) {
+    new := [power(x + dx, y + dy, serial_number) for dx in 0..w, dy in 0..h].sum();
+
+    if new > best {
+      best = new;
+      coord = x, y;
+    }
+  }
+  coord, best
+}
+
+print(grid(42, 3, 3));
+print(grid(7857, 3, 3));
+
+
+fn part2(serial_number) {
+
+  bc,size,best := (),-Inf,-Inf;
+  for i in 1..300 {
+    coord, cur := grid(serial_number, i, i)
+    if cur > best {
+      best = cur;
+      size = i;
+      bc = coord;
+    }
+    print(i, coord, cur);
+  }
+  bc,size,best
+}
+
+print(part2(7857));
