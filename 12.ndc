@@ -1,0 +1,68 @@
+init, lines := read_file("input/12").split_once("\n\n");
+_, init := init.split_once(": ");
+
+rules := %{:"."};
+for line in lines.lines() {
+  from, to := line.split_once(" => ");
+  rules[from] = to;
+}
+
+fn evolve(cur,idx0) {
+  idx0 += 1;
+  // Pad with ... 
+  cur := "..." ++ cur ++ "...";
+  len := cur.len();
+  new := "";
+  for i in 2..(len-2) {
+    slice := cur.slice(i-2,5);
+    new.append(rules[slice]);
+  }
+
+  ok := true;
+  trim := 0;
+  for c in new {
+    if c == "." and ok {
+      trim += 1;
+    } else {
+      ok = false;
+    }
+  }
+  l := new.len();
+
+  idx0 - trim, new.slice(trim, l - trim)
+}
+
+fn score(idx0, cur) {
+  idx := 0 - idx0;
+  ans := 0;
+  for c in cur {
+    if c == "#" {
+      ans += idx;
+    }
+    idx += 1;
+  }
+  ans
+}
+cur := init;
+idx0 := 0;
+print("0", cur);
+i := 0;
+a := [];
+target := 50000000000;
+while i < target {
+  idx0, cur = evolve(cur, idx0);
+  // print(i, idx0, score(idx0, cur), cur);
+  a.push(score(idx0, cur));
+  i += 1;
+
+  if a.len() >= 2 and a[-1] - a[-2] == 96 {
+    rem := target - i;
+    print(score(idx0 - rem, cur));
+    assert(false);
+  }
+}
+
+diff := a[-1] - a[-2];
+
+// 4800000000991 too low
+print(a[-1] + (50000000000 - i) * diff);
