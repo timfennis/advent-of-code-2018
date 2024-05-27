@@ -1,0 +1,46 @@
+lines := read_file("input/15.test").lines();
+w := lines[0].len();
+h := lines.len();
+
+units := [];
+walls := %{};
+for y in 0..h, x in 0..w {
+  c := lines[y][x];
+  if c == "#" { walls.insert((y, x)); }
+  else if c == "E" or c == "G" { units.push((y, x, c, 200)); }
+}
+
+dirs := [(-1, 0),(1, 0),(0,-1),(0,1)];
+rounds := 0;
+
+while true {
+  units = units.sorted();
+  units_idx := %{ (y, x): (y, x, t, h) for y, x, t, h in units };
+ 
+  uc := units.len();
+  occupied := (%{ (y, x) for y, x, _, _ in units } | walls);
+  for idx in 0..uc {
+    cy, cx, ct, chp := units[idx];
+
+    locs := [cy + dy, dx + dx for dy, dx in dirs, if ((cy + dy), (cx + dx)) not in occupied ];
+    et := if ct == "G" { "E" } else { "G" };
+
+    dbg(units_idx.keys());
+    enemies_in_range := [units_idx[y, x] for y, x in locs, if (y, x) in units_idx.keys() and units_idx[y, x] == et];
+    if enemies_in_range.len() > 0  {
+      dbg("ENEM", enemies_in_range);
+    }
+
+    // print(locs);
+
+
+
+    // Range check
+    //
+    // Move if not able to attack
+    //
+    // Attack if able
+  }
+
+  rounds += 1;
+}

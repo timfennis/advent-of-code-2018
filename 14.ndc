@@ -1,0 +1,44 @@
+fn solve(res, cnt) {
+  p1, p2 := false, false;
+  e1 := 0;
+  e2 := 1;
+  while not (p1 and p2) {
+    if res.len() >= (cnt + 10) and not p1 {
+      print("Part 1", to_num([res[i] for i in cnt..(cnt+10)]));
+      p1 = true;
+    }
+
+    new := res[e1] + res[e2];
+    
+    if new >= 10 {
+      res.push(1);
+      res.push(new % 10);
+    } else {
+      res.push(new);
+    }
+
+    l := res.len();
+    e1 = (e1 + res[e1] + 1) % l;
+    e2 = (e2 + res[e2] + 1) % l;
+
+    if res.len() % 100000 == 0 {
+      subseq_index := res.find_subsequence([7,9,3,0,6,1]);
+      // subseq_index := res.find_subsequence([5,1,5,8,9]);
+      if subseq_index != () and not p2 {
+        print("Part 2", subseq_index);
+        p2 = true;
+      }
+    }
+  };
+}
+
+fn to_num(l) {
+  ans := 0;
+  for i in l {
+    ans *= 10;
+    ans += i;
+  }
+  ans
+}
+
+solve([3, 7], 793061);
