@@ -1,4 +1,4 @@
-lines := read_file("input/15.test").lines();
+lines := read_file("input/15.ex2").lines();
 w := lines[0].len();
 h := lines.len();
 
@@ -10,37 +10,203 @@ for y in 0..h, x in 0..w {
   else if c == "E" or c == "G" { units[y,x] = (y, x, c, 200) } 
 }
 
-dirs := [(-1, 0),(1, 0),(0,-1),(0,1)];
-rounds := 0;
+fn enemy(type) {
+  if type == "E" { "G" } else { "E" }
+}
+
+fn print_state() {
+  objects := %{(y, x) for (y, x), _ in units} | walls;
+  minx, miny := 0, 0 ;
+  maxx := [x for (y, x), _ in objects].max();
+  maxy := [y for (y, x), _ in objects].max();
+
+  for y in miny..=maxy {
+    buf := "";
+    for x in minx..=maxx {
+      if (y, x) in walls {
+        buf.append("#");
+      } else if (y, x) in units {
+        buf.append(units[y, x][2]);
+      } else {
+        buf.append(".");
+      }
+    }
+    print(buf);
+  }
+}
+
+fn find_enemy(pos, type) {
+  enemy_type := enemy(type);
+  
+  obstructed := %{(y, x) for _, (y, x, t, _) in units, if t == type} | walls;
+
+  queue := [(pos, 0)];
+  seen := %{pos: 0};
+
+  // Build a mapping (called seen) that tells us how many steps it takes to get to every
+  // location on the board
+  while (cur := queue.pop_left()) != () {
+    (cy, cx), dist := cur;
+    seen[cy, cx] = dist;
+    neighbours := [cy + dy, cx + dx for dy, dx in dirs, if (cy + dy, cx + dx) not in obstructed];
+    for ny, nx in neighbours, if (ny,nx) not in seen {
+      seen[ny, nx] = dist + 1;
+      queue.push(((ny, nx), dist + 1));
+    }
+  }
+
+  // Find all the enemy units and al positions around them. If any of the positions are 
+  // positions we can get to we consider those positions
+  dists := [];
+  for (ey, ex), (_, _, et, ehp) in units, if et == enemy_type {
+    for ey, ex in [ey + dy, ex + dx for dy, dx in dirs], if (ey, ex) in seen {
+      dists.push((seen[ey, ex], ey, ex));
+    }
+  }
+
+  // Sort positions to find the closest option in reading order
+  dists.sort();
+  
+  if dists.len() == 0 {
+    return false;
+  }
+
+  ed, ey, ex := dists[0];
+  
+  ey, ex
+}
+
+fn neighbours(pos, obstructed) {
+  y, x := pos;
+  [y + dy, x + dx for  dy, dx in  dirs, if (y + dy, x + dx) not in obstructed]
+}
+
+fn path_map(start, end) {
+  seen := %{start: 0};
+  obstructed := %{(y, x) for _, (y, x, _, _) in units} | walls;
+  obstructed.remove(end);
+
+  pre := -Inf;
+  while pre < seen.len() {
+    pre = seen.len();
+    cur_len := seen.len();
+    for (y, x), dist in [x for x in seen] {
+      neighbours := neighbours((y, x), obstructed);
+      for (ny, nx) in neighbours {
+        if (ny, nx) not in seen {
+          seen[ny, nx] = dist + 1;
+        } 
+      }
+    }
+  }
+  seen
+}
+
+fn shortest_path(from, to) {
+  (fy, fx), (ty, tx) := from, to;
+
+  obstructed := %{(y, x) for _, (y, x, _, _) in units } | walls;
+  candidates := neighbours(from, obstructed);
+
+  pm := path_map(to, from);
+
+  options := [(pm[y, x], y, x) for y, x in candidates, if (y, x) in pm].sorted();
+
+  if options.len() == 0 {
+    return false;
+  }
+
+  options[0][1], options[0][2]
+}
+
+dirs := [(-1,0),(1,0),(0,-1),(0,1)];
+rounds := 1;
+
+print("--------------- initial state ---------------");
+print_state();
 
 while true {
   uc := units.len();
+  // All the units in the order they get to move in 
   units_seq := [val for key, val in units].sorted();
-  dbg(units_seq);
+  // For each unit
   for idx in 0..uc {
-    cy, cx, ct, chp := units_seq[idx];
+    cy, cx, _, _ := units_seq[idx];
+    if (cy, cx) in units {
+      cy, cx, ct, chp := units[cy, cx];
 
-    locs := [cy + dy, dx + dx for dy, dx in dirs, if ((cy + dy), (cx + dx)) not in walls ];
-    et := if ct == "G" { "E" } else { "G" };
+      locs := [(cy + dy), (cx + dx) for dy, dx in dirs, if ((cy + dy), (cx + dx)) not in walls ];
+      et := enemy(ct);
+
+      enemies_in_range := [units[y, x] for y, x in locs, if (y, x) in units and units[y, x][2] == et].sorted();
+    
+      if enemies_in_range.len() > 0  {
+        ey, ex, et, ehp := enemies_in_range[0];
+
+        // SWING WITH THE AXE
+        if ehp - 3 <= 0 {
+          units.remove((ey, ex));
+        } else {
+          units[ey, ex] = (ey, ex, et, ehp - 3);
+        }
+      } else {
+        // If there are no enemies in range we move
+        target := find_enemy((cy, cx), ct);
+
+        // If we can't get to any target we just do nothing
+        if target != false {
+          // Find the shoretest path to target
+          sp := shortest_path((cy, cx), target);
+          if sp != false {
+            // Move to the new loc
+            ny, nx := sp;
+            units.remove((cy, cx));
+            units[ny, nx] = (ny, nx, ct, chp);
 
 
-    enemies_in_range := [units[y, x] for y, x in locs, if (y, x) in units and units[y, x][2] == et];
-    if enemies_in_range.len() > 0  {
-      dbg("ENEM", enemies_in_range);
+            locs := [(ny + dy), (nx + dx) for dy, dx in dirs, if ((ny + dy), (nx + dx)) not in walls];
+            enemies_in_range := [ehp, ey, ex, et for ey, ex, et, ehp in [units[y, x] for y, x in locs, if (y, x) in units and units[y, x][2] == et]].sorted();
+
+            if enemies_in_range.len() > 0 {
+              ehp, ey, ex, et := enemies_in_range[0];
+              if (ehp - 3) <= 0 {
+                units.remove((ey, ex));
+              } else {
+                units[ey, ex] = (ey, ex, et, ehp - 3);
+              }
+            }
+
+          } else {
+            print_state();
+            assert(false, "NO SHORTEST PATH");
+          }
+        }
+      }
+    } else {
+      print("Unit was alive before but now he's dead");
     }
+  }
 
+  print("---------------", rounds, "---------------");
+  print_state();
+  goblins_alive := [1 for _, (y, x, t, h) in units, if t == "G"].sum();
+  elves_alive := [1 for _, (y, x, t, h) in units, if t == "E"].sum();
+  print("UNITS ALIVE:", units.len());
+  print("GOBLINS ALIVE:", goblins_alive);
+  print("ELVES ALIVE:", elves_alive);
+  for _, (y, x, t, hp) in units {
+    print("unit", t, "pos", y, x, "hp", hp);
+  }
+
+  if elves_alive == 0 or goblins_alive == 0 {
+    winner := if elves_alive == 0 { "G" } else { "E" };
+    print("Simulation is done in round: ", rounds);
+    goblin_hp := [h for _, (_, _, t, h) in units, if t == winner].sum();
+    print("Winner HP:", goblin_hp);
+    print("Part 1:", goblin_hp * rounds);
     assert(false);
-
-    // print(locs);
-
-
-
-    // Range check
-    //
-    // Move if not able to attack
-    //
-    // Attack if able
   }
 
   rounds += 1;
 }
+
