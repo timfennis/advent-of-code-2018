@@ -61,8 +61,3 @@ while i < target {
     assert(false);
   }
 }
-
-diff := a[-1] - a[-2];
-
-// 4800000000991 too low
-print(a[-1] + (50000000000 - i) * diff);
