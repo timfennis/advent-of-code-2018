@@ -1,0 +1,146 @@
+fst, snd := read_file("input/16").split_once("\n\n\n");
+
+fn addr(pre, ins) {
+  op, a, b, c := ins;
+  post := [x for x in pre];
+  post[c] = pre[a] + pre[b];
+  return post;
+}
+fn addi(pre, ins) {
+  op, a, b, c := ins;
+  post := [x for x in pre];
+  post[c] = pre[a] + b;
+  return post;
+}
+fn mulr(pre, ins) {
+  op, a, b, c := ins;
+  post := [x for x in pre];
+  post[c] = pre[a] * pre[b];
+  return post;
+}
+fn muli(pre, ins) {
+  op, a, b, c := ins;
+  post := [x for x in pre];
+  post[c] = pre[a] * b;
+  return post;
+}
+fn banr(pre, ins) {
+  op, a, b, c := ins;
+  post := [x for x in pre];
+  post[c] = pre[a] & pre[b];
+  return post;
+}
+
+fn bani(pre, ins) {
+  op, a, b, c := ins;
+  post := [x for x in pre];
+  post[c] = pre[a] & b;
+  return post;
+}
+
+fn borr(pre, ins) {
+  op, a, b, c := ins;
+  post := [x for x in pre];
+  post[c] = pre[a] | pre[b];
+  return post;
+}
+
+fn bori(pre, ins) {
+  op, a, b, c := ins;
+  post := [x for x in pre];
+  post[c] = pre[a] | b;
+  return post;
+}
+
+fn setr(pre, ins) {
+  op, a, b, c := ins;
+  post := [x for x in pre];
+  post[c] = pre[a];
+  return post;
+}
+
+fn seti(pre, ins) {
+  op, a, b, c := ins;
+  post := [x for x in pre];
+  post[c] = a;
+  return post;
+}
+
+fn gtir(pre, ins) {
+  op, a, b, c := ins;
+  post := [x for x in pre];
+  post[c] = int(a > pre[b]);
+  return post;
+}
+
+fn gtri(pre, ins) {
+  op, a, b, c := ins;
+  post := [x for x in pre];
+  post[c] = int(pre[a] > b);
+  return post;
+}
+
+fn gtrr(pre, ins) {
+  op, a, b, c := ins;
+  post := [x for x in pre];
+  post[c] = int(pre[a] > pre[b]);
+  return post;
+}
+
+fn eqir(pre, ins) {
+  op, a, b, c := ins;
+  post := [x for x in pre];
+  post[c] = int(a == pre[b]);
+  return post;
+}
+
+fn eqri(pre, ins) {
+  op, a, b, c := ins;
+  post := [x for x in pre];
+  post[c] = int(pre[a] == b);
+  return post;
+}
+
+fn eqrr(pre, ins) {
+  op, a, b, c := ins;
+  post := [x for x in pre];
+  post[c] = int(pre[a] == pre[b]);
+  return post;
+}
+
+instructions := [addr, addi, mulr, muli, banr, bani, borr, bori, setr, seti, gtir, gtri, gtrr, eqir, eqri, eqrr];
+
+mapping := %{};
+
+count := 0;
+
+for group in fst.split("\n\n") {
+  pre, ins, post := [line.nums() for line in group.lines()];
+  
+  options := [ instruction for instruction in instructions, if instruction(pre, ins) == post ];
+  if options.len() >= 3 {
+    count += 1;
+  }
+}
+
+print("Part 1:", count);
+mapped := %{};
+used := %{};
+
+for group in fst.split("\n\n") {
+  pre, ins, post := [line.nums() for line in group.lines()];
+  options := [i for i in instructions, if i(pre, ins) == post, if i not in used];
+  if options.len() == 1 {
+    mapped[ins[0]] = options[0];
+    used.insert(options[0]);
+  }
+}
+
+assert(used.len() == 16, "not every instruction was mapped");
+
+mem := [0,0,0,0];
+for line in snd.trim().lines() {
+  ins := line.nums();
+  mem = mapped[ins[0]](mem, ins);
+}
+print("Part 2:", mem[0]);
