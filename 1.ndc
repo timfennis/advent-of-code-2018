@@ -13,17 +13,15 @@ for idx in 0..len {
 
 print("Part 1: ", sum);
 
-fn loop() {
-  while true {
-    sum += lines[idx % len];
-    
-    if sum in nums { 
-      return sum;
-    }
-
-    idx += 1;
+while true {
+  sum += lines[idx % len];
+  
+  if sum in nums { 
+    break;
   }
+
+  idx += 1;
 }
 
-print("Part 2: ", loop());
+print("Part 2: ", sum);
 
