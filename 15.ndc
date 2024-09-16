@@ -232,5 +232,5 @@ for dmg in (20..) {
   print("rounds:", rounds);
   print("no_dead_elves", no_dead_elves);
   print("score:", rounds * winner_hp);
-  if no_dead_elves { assert(false, "TODO: implement break :haha:") }
+  if no_dead_elves { break; }
 }
