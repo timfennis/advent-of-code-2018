@@ -1,23 +1,23 @@
-lines := read_file("input/3").lines();
+let lines = read_file("input/3").lines();
 
-map := %{:0};
+let map = %{:0};
 
 for line in lines {
-  _, x, y, w, h := line.nums();
+  let _, x, y, w, h = line.nums();
   
   for dx in 0..w, dy in 0..h {
     map[(x + dx, y + dy)] += 1;
   }
 }
 
-ans := [1 for _, value in map, if value >= 2].sum();
+let ans = [1 for _, value in map, if value >= 2].sum();
 
 print("Part 1:", ans);
 
 for line in lines {
-  id, x, y, w, h := line.nums();
+  let id, x, y, w, h = line.nums();
 
-  is_ok := true;
+  let is_ok = true;
   for dx in 0..w, dy in 0..h, if map[(x + dx, y + dy)] > 1 {
     is_ok = false;
     break;

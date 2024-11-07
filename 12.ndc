@@ -1,25 +1,26 @@
-init, lines := read_file("input/12").split_once("\n\n");
-_, init := init.split_once(": ");
+let init, lines = read_file("input/12").split_once("\n\n");
+let _, init = init.split_once(": ");
 
-rules := %{:"."};
+let rules = %{:"."};
 for line in lines.lines() {
-  from, to := line.split_once(" => ");
+  let from, to = line.split_once(" => ");
   rules[from] = to;
 }
 
 fn evolve(cur,idx0) {
   idx0 += 1;
   // Pad with ... 
-  cur := "..." ++ cur ++ "...";
-  len := cur.len();
-  new := "";
+  let cur = "..." ++ cur ++ "...";
+  let len = cur.len();
+  let new = "";
+
   for i in 2..(len-2) {
-    slice := cur.slice(i-2,5);
+    let slice = cur.slice(i-2,5);
     new.append(rules[slice]);
   }
 
-  ok := true;
-  trim := 0;
+  let ok = true;
+  let trim = 0;
   for c in new {
     if c == "." and ok {
       trim += 1;
@@ -27,14 +28,14 @@ fn evolve(cur,idx0) {
       ok = false;
     }
   }
-  l := new.len();
+  let l = new.len();
 
   idx0 - trim, new.slice(trim, l - trim)
 }
 
 fn score(idx0, cur) {
-  idx := 0 - idx0;
-  ans := 0;
+  let idx = 0 - idx0;
+  let ans = 0;
   for c in cur {
     if c == "#" {
       ans += idx;
@@ -43,12 +44,13 @@ fn score(idx0, cur) {
   }
   ans
 }
-cur := init;
-idx0 := 0;
+
+let cur = init;
+let idx0 = 0;
 print("0", cur);
-i := 0;
-a := [];
-target := 50000000000;
+let i = 0;
+let a = [];
+let target = 50000000000;
 while i < target {
   idx0, cur = evolve(cur, idx0);
   // print(i, idx0, score(idx0, cur), cur);
@@ -56,8 +58,8 @@ while i < target {
   i += 1;
 
   if a.len() >= 2 and a[-1] - a[-2] == 96 {
-    rem := target - i;
+    let rem = target - i;
     print(score(idx0 - rem, cur));
-    assert(false);
+    break;
   }
 }

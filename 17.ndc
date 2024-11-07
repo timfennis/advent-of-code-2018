@@ -1,0 +1,92 @@
+let walls = %{};
+let water = %{}; // squares occupied by water
+
+for line in read_file("input/17").lines() {
+  let a, b, c = line.nums();
+
+  if line[0] == "x" {
+    walls |= %{(a, y) for y in b..=c};
+  } else {
+    walls |= %{(x, a) for x in b..=c};
+  }
+}
+
+let miny = [y for x, y in walls.keys()].min();
+let maxy = [y for x, y in walls.keys()].max();
+
+let sx, sy = 500, 0;
+let cx, cy = sx, sy;
+while true {
+  print("LOOP", cx, cy)
+  
+  // Is there a wall or water below me
+  if (cx, cy + 1) in walls | water {
+    let tx, ty = cx, cy;
+    // check to see if enclosed
+    
+    let mx1, mx2 = false, false;
+    while true {
+      if (cx - 1, cy) in walls {
+        mx1 = cx;
+        break;
+      }
+
+      cx -= 1;
+
+      if (cx, cy + 1) in walls {
+        // we cannot go down
+      } else {
+        // we can go down
+        cy += 1;
+        break;
+      }
+    }
+
+    // if enclosed on the left
+    if mx1 != false {
+      cx, cy = tx, ty; // revert
+      
+      while true {
+        if (cx + 1, cy) in walls {
+          mx2 = cx;
+          break;
+        }
+
+        cx += 1;
+
+        if (cx, cy + 1) in walls {
+          // we cannot go down
+        } else {
+          // if we can go down we break
+          cy += 1;
+          break;
+        }
+      }
+
+      // if enclosed on the right
+      if mx2 != false {
+        print("enclosed on two sides", mx1, mx2, cy);
+        for ix in mx1 ..= mx2 {
+          water.insert((ix, cy));
+        }
+        cx, cy = sx, sy; // back to the source
+      } else {
+        // 
+        print("source moved right, continuing...", cx, cy);
+      }
+    } else {
+      print("source moved left, continuing....", cx, cy);
+    }
+
+
+    
+
+    // search left -> down
+    // search right -> down
+
+  } else {
+    cy += 1;
+  }
+}
+
+print(water);

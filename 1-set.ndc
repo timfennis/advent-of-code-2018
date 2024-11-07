@@ -1,6 +1,7 @@
-nums := read_file("input/1").signed_nums();
-sum := 0;
-set := %{};
+let nums = read_file("input/1").signed_nums();
+let sum = 0;
+let set = %{};
+
 for num in nums {
   sum += num;
   set.insert(sum);
@@ -8,14 +9,14 @@ for num in nums {
 
 print("Part 1", sum);
 
-idx := 0;
-len := nums.len();
-go := true; // poor man break
-while go {
+let idx = 0;
+let len = nums.len();
+
+while true {
   sum += nums[idx % len];
 
   if sum in set {
-    go = false
+    break;
   } else {
     set.insert(sum);
   }

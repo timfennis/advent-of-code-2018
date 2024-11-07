@@ -1,8 +1,8 @@
-lines := read_file("input/6").lines();
+let lines = read_file("input/6").lines();
 
-points := %{};
+let points = %{};
 
-min_x, max_x, min_y, max_y := Inf, -Inf, Inf, -Inf;
+let min_x, max_x, min_y, max_y = Inf, -Inf, Inf, -Inf;
 
 for x, y in [line.nums() for line in lines] {
   points.insert((x, y));
@@ -12,15 +12,15 @@ for x, y in [line.nums() for line in lines] {
   max_y max= y;
 }
 
-sizes := %{:0};
+let sizes = %{:0};
 
-part_two := 0;
+let part_two = 0;
 
 for x in min_x..=max_x, y in min_y..=max_y {
-  dists := %{};
-  sum := 0;
+  let dists = %{};
+  let sum = 0;
   for px, py in points.keys() {
-    dist := abs(px - x) + abs(py - y);
+  let dist = abs(px - x) + abs(py - y);
     sum += dist;
     if dist in dists {
       dists[dist].insert((px, py));
@@ -34,7 +34,7 @@ for x in min_x..=max_x, y in min_y..=max_y {
     part_two += 1;
   }
 
-  m := dists.min()
+  let m = dists.min()
   if dists[m].len() == 1 {
     for p, _ in dists[m] {
       sizes[p] += 1;
@@ -42,7 +42,7 @@ for x in min_x..=max_x, y in min_y..=max_y {
   }
 }
 
-best := 0;
+let best = 0;
 
 for point, size in sizes {
   best max= size;

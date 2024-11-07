@@ -1,37 +1,38 @@
-points := [line.signed_nums() for line in read_file("input/10").lines()];
+let points = [line.signed_nums() for line in read_file("input/10").lines()];
 
 fn advance(points) {
-  ret := [];
+  let ret = [];
   for x, y, dx, dy in points {
     ret.push([x + dx, y + dy, dx, dy]);
   }
   ret
 }
 
-count := 0;
+let count = 0;
 while true {
   points = advance(points);
   count += 1;
-  p := %{ (x, y) for x, y, _, _ in points };
-  xs := %{ x for x, y, _, _ in points };
-  xmin, xmax := xs.min(), xs.max();
-  ys := %{ y for _, y, _, _ in points };
-  ymin, ymax := ys.min(), ys.max();
+
+  let p = %{ (x, y) for x, y, _, _ in points };
+  let xs = %{ x for x, y, _, _ in points };
+  let xmin, xmax = xs.min(), xs.max();
+  let ys = %{ y for _, y, _, _ in points };
+  let ymin, ymax = ys.min(), ys.max();
   
   if (xmax - xmin) == 61 {
     for y in ymin..=ymax {
-      line := "";
+      let line = "";
       for x in xmin..=xmax {
         if (x, y) in p {
-          line.append("#");
+          line <>= "#";
         } else {
-          line.append(" ");
+          line <>= " ";
         }
       }
       print(line);
     }
     print("Count", count);
-    assert(false);
+    break;
   }
 }
 

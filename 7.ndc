@@ -1,13 +1,12 @@
-lines := read_file("input/7").trim().lines();
+let lines = read_file("input/7").trim().lines();
 
-graph := %{};
-rev_graph := %{};
-
+let graph = %{};
+let rev_graph = %{};
 
 fn score(n) { ord(n) - ord("A") + 61 }
 
 for line in lines {
-  _, from, to := line.capture_once(r"Step ([A-Z]) must be finished before step ([A-Z]) can begin.");
+  let _, from, to = line.capture_once(r"Step ([A-Z]) must be finished before step ([A-Z]) can begin.");
 
   if !(from in graph) {
     graph[from] = %{};
@@ -21,17 +20,17 @@ for line in lines {
   rev_graph[to].insert(from);
 }
 
-queue := [key for key, _ in graph, if key not in rev_graph];
-queue2 := %{key: score(key) for key in queue};
+let queue = [key for key, _ in graph, if key not in rev_graph];
+let queue2 = %{key: score(key) for key in queue};
 
-path := "";
-while (cur := queue.pop()) != () {
+let path = "";
+let while (cur = queue.pop()) != () {
   path.append(cur);
   
 
   if cur in graph {
     for dest, _ in graph[cur], if dest not in path and dest not in queue {
-      ok := true
+      let ok = true
       if dest in rev_graph {
         for check, _ in rev_graph[dest], if check not in path {
           ok = false
@@ -48,14 +47,14 @@ while (cur := queue.pop()) != () {
 }
 print("Part 1", path);
 
-path := "";
+let path = "";
 
-seconds := 0;
+let seconds = 0;
 while queue2.len() > 0 {
   seconds += 1;
 
-  work := queue2.keys().sorted();
-  lim := 0;
+  let work = queue2.keys().sorted();
+  let lim = 0;
   for step in work {
     lim += 1;
     if lim <= 5 {
@@ -69,7 +68,7 @@ while queue2.len() > 0 {
 
         if step in graph {
           for dest, _ in graph[step], if dest not in path and dest not in queue2 {
-            ok := true
+            let ok = true
             if dest in rev_graph {
               for check, _ in rev_graph[dest], if check not in path {
                 ok = false

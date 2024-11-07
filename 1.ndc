@@ -1,8 +1,8 @@
-lines := read_file("input/1").lines();
+let lines = read_file("input/1").lines();
 
-nums := [];
-len := lines.len();
-idx, sum := 0, 0;
+let nums = [];
+let len = lines.len();
+let idx, sum = 0, 0;
 
 for idx in 0..len {
   // The `int` function accepts a '+' sign as part of the input string

@@ -1,12 +1,12 @@
 lines = read_file("input/2").lines();
 
-two, three := 0, 0;
+let two, three = 0, 0;
 
 for line in lines {
-  has_two, has_three := false, false;
+  let has_two, has_three = false, false;
   
   for c in "abcdefghijklmnopqrstuvwxyz" {
-    count := [ 1 for cc in line, if cc == c ].sum();
+    let count = [ 1 for cc in line, if cc == c ].sum();
 
     if count == 2 { 
       has_two = true;
@@ -29,9 +29,9 @@ print("Part 1:", two * three);
 fn part2() {
 
   for v in lines, vv in lines {
-    idx := 0;
-    len := v.len();
-    diff := 0;
+    let idx = 0;
+    let len = v.len();
+    let diff = 0;
     while idx < len and diff <= 1 {
       if v[idx] != vv[idx] {
         diff += 1;
@@ -42,7 +42,7 @@ fn part2() {
     // if diff is exactly one
     if diff == 1 {
       idx = 0;
-      ans := "";
+      let ans = "";
       while idx < len {
         if v[idx] == vv[idx] {
           ans.append(vv[idx]);

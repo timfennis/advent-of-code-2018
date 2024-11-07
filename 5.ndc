@@ -1,12 +1,11 @@
 fn retract(cur) {
-  len := cur.len();
-  i := 0;
+  let len = cur.byte_len();
+  let i = 0;
   while i < (len - 1) {
-    sub := ord(cur[i]) - ord(cur[i + 1]);
+    let sub = ord(cur[i]) - ord(cur[i + 1]);
     if sub == 32 or sub == -32 {
-      cur = cur.slice(0, i) ++ cur.slice(i + 2, len);
-      i -= 2;
-      i max= 0;
+      cur = cur[0..i] ++ cur[i + 2..i + 2 + len];
+      i = max(i - 2, 0);
       len = cur.byte_len();
     } else {
       i += 1;
@@ -15,14 +14,14 @@ fn retract(cur) {
   return cur;
 }
 
-line := read_file("input/5").trim();
+let line = read_file("input/5").trim();
 
-ans := line.retract().len();
+let ans = line.retract().len();
 print("part 1:", ans);
 
-best := ans;
+let best = ans;
 for c in "abcdefghijklmnopqrstuvwxyz" {
-  l := "";
+  let l = "";
   for cc in line, if cc.to_lower() != c {
     l.append(cc);
   }
